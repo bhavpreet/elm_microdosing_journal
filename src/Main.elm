@@ -9,6 +9,7 @@ import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Material.Button as Button
+import Chart
 
 
 
@@ -48,14 +49,16 @@ view model =
                                                  , rgb255 149 117 205
                                                  ]
                                          }
-                   -- , Background.color <| rgb 0 0 0
                    ] <|
-        column [ centerX
-               ]
+        column [ padding 20
+               , centerX
+               , width fill ]
             [ image [ centerX, width <| px 110 ] { src = "/logo.svg"
-                       , description = "my logo" }
+                                                 , description = "my logo" }
             , el [ padding 10 ] none
-            , el [ Font.heavy ] (text "Your Elm App is working!")
+            , el [ centerX
+                 , Font.heavy ] (text "Your Elm App is working!")
+            , el [ width fill ] <| html <| Chart.chart
             , el [ padding 10 ] none
             , el [ centerX ] <|
                 html <| Button.raised (Button.config |> Button.setOnClick Clicked) "+1"
