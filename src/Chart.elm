@@ -32,27 +32,31 @@ import Color
 chart : Html.Html msg
 chart =
   LineChart.viewCustom
-    { y = Axis.default 450 "Weight" .weight
-    , x = Axis.default 700 "Age" .age
+    { y = Axis.none 450 .weight
+    , x = Axis.none 700 .age
+    -- , y = Axis.default 450 "Weight" .weight
+    -- , x = Axis.default 700 "Age" .age
     , container = Container.responsive "line-chart-1" -- Try resizing your brower window!
     -- , container = Container.styled "line-chart-1" [ ( "font-family", "monospace" ) ]
     , interpolation = Interpolation.default
     , intersection = Intersection.default
-    , legends = Legends.default
+    , legends = Legends.byEnding (Junk.label Colors.black)
+    -- , legends = Legends.default
     , events = Events.default
     , junk = Junk.default
     , grid = Grid.default
     , area =
         -- Try out these different configs!
-        -- Area.default
+        Area.default
         -- Area.normal 0.5
-        Area.stacked 0.5
-    , line = Line.default
+        -- Area.stacked 0.5
+    -- , line = Line.default
+    , line = Line.wider 4.5
     , dots = Dots.default
     }
-    [ LineChart.line Colors.pink Dots.triangle "Chuck" chuck
-    , LineChart.line Colors.blue Dots.circle "Bobby" bobby
-    , LineChart.line Colors.cyan Dots.diamond "Alice" alice
+    [ LineChart.line Colors.red Dots.triangle "Depression" chuck
+    , LineChart.line Colors.blue Dots.circle "Anxiety" bobby
+    , LineChart.line Colors.cyan Dots.diamond "Stress" alice
     ]
 
 
