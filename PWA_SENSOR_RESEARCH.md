@@ -591,7 +591,7 @@ Rather than integrating 5+ wearable APIs individually, aggregation services prov
 ### Pattern 3: PWA + Capacitor Hybrid
 
 ```
-[Your SvelteKit PWA]
+[Your React Native (Expo) App]
     ├── Browser: Standard PWA experience
     └── Capacitor wrapper:
         ├── iOS: HealthKit plugin → Apple Health data
@@ -619,7 +619,7 @@ Rather than integrating 5+ wearable APIs individually, aggregation services prov
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                  Your PWA (SvelteKit)            │
+│           Your React Native (Expo) App            │
 ├─────────────────────────────────────────────────┤
 │  Sensor Abstraction Layer                        │
 │  ┌──────────┐ ┌──────────┐ ┌──────────────────┐ │

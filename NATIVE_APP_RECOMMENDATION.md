@@ -50,7 +50,7 @@
 | **Community** | Largest | Very large | Growing (23% market share) | Moderate |
 | **Desktop** | Yes (MS-backed Windows/macOS) | Yes (stable Win/Mac/Linux) | Yes (Compose Desktop) | Via Electron (heavy) |
 | **Web** | Yes (React Native Web) | Yes (Flutter Web) | Beta (Compose/Wasm) | Native (IS a web app) |
-| **Elm/TEA Patterns** | Strong (useReducer, Redux = Elm-inspired) | Good (Dartea, BLoC) | Strong (sealed classes, MVIKotlin) | Via Svelte stores |
+| **TEA/MVU Patterns** | Strong (useReducer, Redux) | Good (Dartea, BLoC) | Strong (sealed classes, MVIKotlin) | Via Svelte stores |
 | **Learning Curve** | Moderate (JS/TS + React) | Moderate (Dart) | Steep (Kotlin + iOS tooling) | Low (existing web skills) |
 
 ### Frameworks NOT Recommended
@@ -69,11 +69,11 @@
 
 Both are excellent choices. Here's why React Native edges ahead for *this specific project*:
 
-**1. Elm Architecture is native to React**
-Redux was literally inspired by Elm. `useReducer` IS the Elm Architecture (Model-View-Update). If you value Elm's patterns, React is the closest mainstream framework:
+**1. TEA (Model-View-Update) pattern is native to React**
+React's `useReducer` IS the Model-View-Update pattern. It provides predictable, testable state management with pure update functions:
 
 ```typescript
-// This IS The Elm Architecture, in React
+// The TEA (Model-View-Update) pattern in React
 type Model = { doses: Dose[]; mood: number; hrv: number | null };
 
 type Msg =
@@ -102,8 +102,8 @@ The [ReViSe/Veyetals framework](https://arxiv.org/pdf/2206.08748) demonstrates R
 **4. Web deployment story**
 React Native Web + Expo Router gives you iOS, Android, AND web from one codebase. Your PWA can be a first-class citizen alongside native apps. Flutter Web exists but has larger bundle sizes and SEO concerns.
 
-**5. ReScript option for true Elm-like experience**
-[ReScript](https://rescript-lang.org/) is an ML-family language (like Elm's core) that compiles to JavaScript and works with React Native. If you want Elm's strict compiler + React Native's ecosystem, this is the path.
+**5. ReScript option for stricter type safety**
+[ReScript](https://rescript-lang.org/) is an ML-family language that compiles to JavaScript and works with React Native. It provides an even stricter compiler than TypeScript for maximum safety.
 
 **6. Ecosystem depth**
 npm has tens of thousands of React Native packages. The BLE, health data, and background processing libraries are all production-proven at scale (Shopify, Meta, Microsoft use React Native).
@@ -139,7 +139,7 @@ npx eas build      # Cloud build for iOS/Android
 | Encryption | `react-native-keychain` + Web Crypto API | Production |
 | Camera (rPPG) | `expo-camera` + custom frame processing | Proven in research |
 | EEG FFT | Native module (C++/Rust via JSI) | Proven (EEG-101) |
-| State management | `useReducer` + context (Elm Architecture) | Built-in |
+| State management | `useReducer` + context (TEA pattern) | Built-in |
 | Navigation | Expo Router (file-based) | Production |
 
 ---
@@ -410,7 +410,7 @@ it because of something you have read or accessed through this app."
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                    React Native (Expo)                       │
-│                    TypeScript + Elm Architecture             │
+│                    TypeScript + TEA Pattern                   │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  ┌─────────────────────────────────────────────────────┐   │
@@ -462,7 +462,7 @@ it because of something you have read or accessed through this app."
 └─────────────────────────────────────────────────────────────┘
 ```
 
-### State Management: Elm Architecture in React Native
+### State Management: TEA Pattern in React Native
 
 ```typescript
 // types.ts — The Model
@@ -548,7 +548,7 @@ function update(model: Model, msg: Msg): Model {
 
 **Goal**: Replace and surpass the PWA with a native app.
 
-- React Native (Expo) project setup with Elm Architecture
+- React Native (Expo) project setup with TEA pattern (useReducer)
 - Journal entries: mood, energy, focus, creativity ratings
 - Dose logging: substance, amount, timestamp, notes
 - Protocol scheduling: Fadiman, Stamets, custom
@@ -609,9 +609,9 @@ function update(model: Model, msg: Msg): Model {
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
-| **Framework** | React Native (Expo SDK 54+) | Best Elm-pattern fit, proven EEG/BLE, web support |
-| **Language** | TypeScript (or ReScript for Elm purists) | Type safety, ecosystem depth |
-| **State** | useReducer + Context (Elm Architecture) | Pure functions, predictable state |
+| **Framework** | React Native (Expo SDK 54+) | Best TEA-pattern fit, proven EEG/BLE, web support |
+| **Language** | TypeScript | Type safety, ecosystem depth |
+| **State** | useReducer + Context (TEA pattern) | Pure functions, predictable state |
 | **Navigation** | Expo Router | File-based, works on iOS/Android/web |
 | **Local DB** | expo-sqlite or WatermelonDB | Fast, reactive, encrypted |
 | **Sync** | PowerSync + Supabase (self-hostable) | Offline-first, E2EE compatible, SQL |
@@ -639,7 +639,7 @@ function update(model: Model, msg: Msg): Model {
 - [Flutter Health Plugin](https://pub.dev/packages/health)
 - [KMP Production Readiness](https://volpis.com/blog/is-kotlin-multiplatform-production-ready/)
 - [Kable BLE Library](https://github.com/JuulLabs/kable)
-- [Elm Architecture with React](https://dev.to/atmorojo/the-elm-architecture-with-react-2p1m)
+- [TEA Pattern with React](https://dev.to/atmorojo/the-elm-architecture-with-react-2p1m)
 - [Tauri 2.0 Release](https://v2.tauri.app/blog/tauri-20/)
 
 ### Multi-Device Sync

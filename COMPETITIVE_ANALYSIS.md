@@ -574,7 +574,7 @@ Synthesized from app store reviews, the Psily design case study (which drew from
 ## Market Gaps & Opportunities
 
 ### Gap 1: No Quality Cross-Platform Solution
-Every app is either iOS-only, Android-only, or web-only. No single app covers all three platforms well. An Elm-based web app with PWA capabilities could serve all platforms from a single codebase.
+Every app is either iOS-only, Android-only, or web-only. No single app covers all three platforms well. A React Native (Expo) app can serve iOS, Android, and web from a single TypeScript codebase.
 
 ### Gap 2: No True Privacy-First App with Rich Features
 MicroTracker is privacy-first but feature-poor. Feature-rich apps (Deliqs, Houston) require accounts or cloud storage. There is no app that combines rich tracking, journaling, visualization, AND fully local/encrypted data storage.

@@ -17,7 +17,7 @@
 7. [Legal & Regulatory Landscape](#7-legal--regulatory-landscape)
 8. [The Chakra Framework — A Unique Differentiator](#8-the-chakra-framework--a-unique-differentiator)
 9. [Native App vs. PWA vs. Website](#9-native-app-vs-pwa-vs-website)
-10. [Technology Considerations (Elm & Beyond)](#10-technology-considerations-elm--beyond)
+10. [Technology Stack: React Native (Expo)](#10-technology-stack-react-native-expo)
 11. [Proposed Feature Set](#11-proposed-feature-set)
 12. [Open Questions for the Creator](#12-open-questions-for-the-creator)
 13. [Sources & References](#13-sources--references)
@@ -39,7 +39,7 @@ The growing legal acceptance of psilocybin (Oregon, Colorado, Australia, and 36+
 
 **Market size is massive and growing:** A [RAND Corporation study (January 2026)](https://www.rand.org/news/press/2026/01/millions-of-us-adults-microdosing-psychedelics.html) — the first nationally representative survey — estimated that **approximately 10 million U.S. adults microdosed psilocybin, LSD, or MDMA in 2025**. Among past-year psilocybin users, roughly two-thirds reported microdosing at least once.
 
-**Our recommendation: Build a Progressive Web App (PWA)** — it avoids app store gatekeeping risks, works cross-platform, supports offline use, and aligns perfectly with the privacy-first philosophy. The Chakra framework is not just a visual theme but a genuine differentiator that bridges Eastern wisdom with modern self-tracking in a way no competitor does.
+**Our recommendation: Build with React Native (Expo)** — it delivers native BLE sensor support, HealthKit/Health Connect integration, offline-first architecture, and cross-platform deployment (iOS, Android, Web) from a single TypeScript codebase. The Chakra framework is not just a visual theme but a genuine differentiator that bridges Eastern wisdom with modern self-tracking in a way no competitor does.
 
 ---
 
@@ -395,63 +395,74 @@ Modern PWAs can:
 
 ---
 
-## 10. Technology Considerations (Elm & Beyond)
+## 10. Technology Stack: React Native (Expo)
 
-### 10.1 The Case for Elm
+### 10.1 Why React Native (Expo)
 
-The project was initialized with Elm in mind. Elm has genuine strengths that are **particularly well-suited** for this specific project:
+After evaluating PWA, Flutter, Kotlin Multiplatform, and Capacitor approaches (see [NATIVE_APP_RECOMMENDATION.md](./NATIVE_APP_RECOMMENDATION.md) and [FLUTTER_ECOSYSTEM_RESEARCH.md](./FLUTTER_ECOSYSTEM_RESEARCH.md)), **React Native with Expo** is the chosen stack for this project. Key reasons:
 
-- **Zero runtime exceptions** — critical for a personal journal where reliability builds trust. Users cannot lose data to crashes.
-- **Extreme stability** — last release was 0.19.1 (October 2019), but this is a feature: an Elm app written today will work identically in 5 years with zero maintenance. No dependency churn.
-- **Small, auditable output** — compiles to a single optimized JS file (~30-50KB). For a privacy-sensitive app, having a small, inspectable codebase is invaluable.
-- **Enforced architecture (TEA)** — The Elm Architecture naturally produces well-structured apps with clear data flow, ideal for a CRUD journaling app.
-- **Immutable data** — prevents accidental data corruption of journal entries.
-- **Proven PWA capability** — [dwyl/elm-pwa-example](https://github.com/dwyl/elm-pwa-example) achieves a 100% Lighthouse Score. [elm-starter](https://lucamug.medium.com/elm-starter-a-tool-for-the-modern-web-786dbbeed7a1) converts Elm SPAs into statically generated PWAs.
+- **Native BLE support** — `react-native-ble-plx` provides auto-reconnect, background collection, and works on both iOS and Android (unlike Web Bluetooth which is blocked on Safari/iOS)
+- **Full health data access** — `react-native-health` (HealthKit) + `react-native-health-connect` (Health Connect) for sleep, HR, HRV, steps
+- **Proven EEG integration** — NeuroTechX's EEG-101 demonstrates working React Native + Muse headband integration with native FFT
+- **TEA pattern built-in** — React's `useReducer` hook IS the Model-View-Update pattern (Redux was literally inspired by it), giving us predictable, testable state management
+- **Cross-platform from one codebase** — iOS, Android, AND Web via Expo Router + React Native Web
+- **TypeScript** — Full type safety, large ecosystem, easy to hire for
+- **Expo ecosystem** — EAS cloud builds, OTA updates, config plugins, file-based routing
 
-### 10.2 Elm Limitations to Consider
+### 10.2 Key Libraries
 
-- **Stalled development** — last release October 2019. For a small, focused app this is fine; for a large commercial project, it's a concern.
-- **Smaller ecosystem** — fewer libraries and community resources than React/Vue/Svelte
-- **JavaScript interop via Ports** — cannot directly call Web Crypto API, IndexedDB, or Notification API; needs message-passing through ports (a well-established pattern)
-- **Hiring/collaboration** — fewer developers know Elm; harder to find contributors
-- **No mobile-native story** — Elm targets the web only (but PWA IS the intended platform)
+| Need | Library | Maturity |
+|------|---------|----------|
+| BLE sensors | `react-native-ble-plx` | Production |
+| HealthKit (iOS) | `react-native-health` | Production |
+| Health Connect (Android) | `react-native-health-connect` | Production |
+| Background fetch | `react-native-background-fetch` | Industry standard |
+| Local DB | `expo-sqlite` or WatermelonDB | Production |
+| Offline sync | PowerSync SDK for React Native | Production |
+| Encryption | `react-native-keychain` + `expo-crypto` | Production |
+| Camera (rPPG) | `expo-camera` + frame processing | Proven in research |
+| EEG FFT | Native module (C++/Rust via JSI) | Proven (EEG-101) |
+| State management | `useReducer` + context (TEA pattern) | Built-in |
+| Navigation | Expo Router (file-based) | Production |
 
-### 10.3 Alternative Consideration
-
-If the Elm ecosystem feels too constraining, consider:
-
-- **Elm for core app logic + JavaScript/TypeScript for PWA infrastructure** — a hybrid approach that leverages Elm's strengths while using JS for service workers, IndexedDB management, and push notifications
-- **Svelte/SvelteKit** — Lightweight, compiler-based (similar philosophy to Elm), excellent PWA support, larger ecosystem
-- **Solid.js** — Reactive, performant, small bundle, good developer experience
-
-**Recommendation:** Start with Elm for the core application. Use JavaScript through Elm's ports system for PWA-specific features (service workers, IndexedDB, Web Crypto API encryption, notifications). This keeps the benefits of Elm's type safety for the core journal logic while leveraging the JS ecosystem where needed.
-
-### 10.4 Proposed Architecture
+### 10.3 Proposed Architecture
 
 ```
-┌─────────────────────────────────────┐
-│           Elm Application           │
-│  (UI, State, Data Model, Routing)   │
-│                                     │
-│  ┌───────────┐  ┌───────────────┐   │
-│  │ Chakra UI  │  │ Journal Logic │   │
-│  │ Components │  │ & Validation  │   │
-│  └───────────┘  └───────────────┘   │
-│           │  Ports  │               │
-├───────────┼─────────┼───────────────┤
-│           ▼         ▼               │
-│     JavaScript Interop Layer        │
-│  ┌──────────┐ ┌──────────────────┐  │
-│  │Web Crypto │ │    IndexedDB     │  │
-│  │AES-256-GCM│ │ (Encrypted Data) │  │
-│  └──────────┘ └──────────────────┘  │
-│  ┌──────────┐ ┌──────────────────┐  │
-│  │  Service  │ │  Notification    │  │
-│  │  Worker   │ │  API             │  │
-│  └──────────┘ └──────────────────┘  │
-└─────────────────────────────────────┘
-         Zero Network Calls
-         After Initial Load
+┌─────────────────────────────────────────────────────────────┐
+│                    React Native (Expo)                       │
+│                    TypeScript + TEA Pattern                  │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │              Presentation Layer                      │   │
+│  │  Expo Router (file-based navigation)                 │   │
+│  │  React components with useReducer (TEA pattern)      │   │
+│  │  Platform: iOS / Android / Web                       │   │
+│  └──────────────────────┬──────────────────────────────┘   │
+│                         │                                   │
+│  ┌──────────────────────▼──────────────────────────────┐   │
+│  │              Business Logic Layer                    │   │
+│  │  Pure functions: update(model, msg) → model          │   │
+│  │  Protocol scheduling, trend analysis, correlations   │   │
+│  │  HRV computation (RMSSD, SDNN from RR intervals)    │   │
+│  └──────────────────────┬──────────────────────────────┘   │
+│                         │                                   │
+│  ┌──────────────────────▼──────────────────────────────┐   │
+│  │              Data Access Layer                       │   │
+│  │  ┌────────────┐ ┌────────────┐ ┌─────────────────┐  │   │
+│  │  │ BLE Sensor │ │ HealthKit/ │ │ Cloud API       │  │   │
+│  │  │ Provider   │ │ Health     │ │ Provider        │  │   │
+│  │  │ (HR, EEG)  │ │ Connect    │ │ (Oura, Fitbit)  │  │   │
+│  │  └────────────┘ └────────────┘ └─────────────────┘  │   │
+│  └──────────────────────┬──────────────────────────────┘   │
+│                         │                                   │
+│  ┌──────────────────────▼──────────────────────────────┐   │
+│  │              Storage & Sync Layer                    │   │
+│  │  SQLite (local, encrypted with AES-256-GCM)         │   │
+│  │  PowerSync (offline-first sync across devices)       │   │
+│  │  react-native-keychain (encryption key storage)      │   │
+│  └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -502,8 +513,8 @@ As we move from research to implementation, these questions will shape key decis
 4. **Language & tone** — Clinical and neutral? Warm and spiritual? Science-forward? This affects everything from button labels to onboarding copy.
 
 ### Technical Direction
-5. **Commitment to Elm** — Are you committed to Elm specifically, or open to alternatives if they better serve the product? Elm is excellent but niche.
-6. **Solo developer or team?** — If solo, Elm's safety is a huge asset. If planning to grow a team, broader frameworks may be more practical.
+5. **Expo managed vs. bare workflow** — Managed workflow is simpler but bare gives more native control. Which BLE/sensor features are must-haves for MVP?
+6. **Solo developer or team?** — TypeScript + Expo has a large hiring pool. Consider team scaling needs early.
 7. **Data model flexibility** — How important is it that users can define completely custom parameters vs. choosing from a curated list?
 
 ### Business & Distribution
@@ -595,11 +606,11 @@ As we move from research to implementation, these questions will shape key decis
 - [Psychological Significance of the Chakras — ResearchGate](https://www.researchgate.net/publication/338895528_Psychological_Significance_of_the_Chakras)
 - [Chakra as Bio-Socio-Psycho-Spiritual Model — J. Applied Consciousness Studies](https://journals.lww.com/joacs/fulltext/2013/01010/the_chakra_system_as_a_bio_socio_psycho_spiritual.5.aspx)
 
-### Elm & PWA Technical
-- [dwyl/elm-pwa-example — 100% Lighthouse Score](https://github.com/dwyl/elm-pwa-example)
-- [elm-starter — Static PWA Generator](https://lucamug.medium.com/elm-starter-a-tool-for-the-modern-web-786dbbeed7a1)
-- [Bendyworks — Capacitor + Elm](https://bendyworks.com/blog/capacitor-elm/)
-- [Using Elm in 2025 — Engage Software](https://engagesoftware.com/posts/using-elm-in-2025/)
+### React Native & Expo
+- [React Native Expo Complete Guide 2026](https://reactnativeexpert.com/blog/react-native-expo-complete-guide/)
+- [React Native BLE Integration](https://reactnativeexpert.com/blog/mastering-bluetooth-low-energy-integration-with-react-native/)
+- [NeuroTechX EEG-101 (React Native + Muse)](https://github.com/NeuroTechX/eeg-101)
+- [PowerSync + Supabase Offline-First](https://www.powersync.com/blog/offline-first-apps-made-simple-supabase-powersync)
 
 ---
 

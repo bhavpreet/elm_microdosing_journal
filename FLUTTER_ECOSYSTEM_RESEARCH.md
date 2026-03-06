@@ -11,7 +11,7 @@
 2. [Flutter Health Data (HealthKit + Health Connect)](#2-flutter-health-data-healthkit--health-connect)
 3. [Flutter EEG / Muse Headband](#3-flutter-eeg--muse-headband)
 4. [Flutter Offline-First Sync & Local Databases](#4-flutter-offline-first-sync--local-databases)
-5. [Flutter State Management: Elm Architecture Alignment](#5-flutter-state-management-elm-architecture-alignment)
+5. [Flutter State Management: TEA Pattern Alignment](#5-flutter-state-management-tea-pattern-alignment)
 6. [Summary: Flutter vs React Native for This Project](#6-summary-flutter-vs-react-native-for-this-project)
 
 ---
@@ -183,9 +183,9 @@ For a microdosing journal with offline-first sync: **Drift for local persistence
 
 ---
 
-## 5. Flutter State Management: Elm Architecture Alignment
+## 5. Flutter State Management: TEA Pattern Alignment
 
-### Dartea — The Elm Architecture (TEA) for Flutter
+### Dartea — TEA (Model-View-Update) for Flutter
 
 [Dartea](https://github.com/p69/dartea) is a direct implementation of TEA/MVU (Model-View-Update) for Flutter. It enforces:
 - **Immutable app state (Model)**
@@ -224,11 +224,11 @@ Riverpod does not enforce a strict event/message pattern like TEA. State mutatio
 
 ### Signals — Lightweight, Not TEA-Like
 
-Flutter Signals (introduced late 2024) are a reactive primitive inspired by SolidJS. They are lightweight and great for local UI state but lack the structured event/message dispatch that TEA requires. Not recommended if you want Elm-like architecture.
+Flutter Signals (introduced late 2024) are a reactive primitive inspired by SolidJS. They are lightweight and great for local UI state but lack the structured event/message dispatch that TEA requires. Not recommended if you want TEA-style architecture.
 
-### Recommendation for an Elm-Inspired Architecture
+### Recommendation for a TEA-Inspired Architecture
 
-**BLoC** is the best production-ready choice if you want Elm Architecture principles in Flutter. It gives you:
+**BLoC** is the best production-ready choice if you want TEA (Model-View-Update) principles in Flutter. It gives you:
 - Explicit events (messages) as the only way to trigger state changes
 - Immutable state objects
 - Testable, predictable state transitions
@@ -260,7 +260,7 @@ If you want to go even more purely TEA, you could use BLoC as the foundation but
 | **EEG (Muse)** | No library — platform channels or BLE reverse-eng | muse-js (Web Bluetooth) + EEG-101 (proven) | **React Native** — proven EEG ecosystem |
 | **Local DB** | Drift (type-safe, reactive, encrypted) | expo-sqlite / WatermelonDB | **Flutter** — Drift is best-in-class |
 | **Offline sync** | PowerSync Flutter SDK (v1.17) | PowerSync React Native SDK | **Tie** — same service, both supported |
-| **Elm Architecture** | BLoC (close match, requires discipline) | useReducer (IS the Elm Architecture) | **React Native** — closer fit by design |
+| **TEA Pattern** | BLoC (close match, requires discipline) | useReducer (IS the TEA pattern) | **React Native** — closer fit by design |
 | **Web deployment** | Flutter Web (large bundles, SEO concerns) | React Native Web + Expo Router | **React Native** — lighter, better SEO |
 | **Desktop** | Excellent (Win/Mac/Linux stable) | Good (MS-backed Win/Mac) | **Flutter** — more mature desktop |
 | **Hot reload** | Best-in-class | Excellent | **Flutter** — slight edge |
@@ -272,8 +272,8 @@ If you want to go even more purely TEA, you could use BLoC as the foundation but
 2. **The EEG gap is significant** — no Flutter Muse library exists, requiring custom platform channel work or BLE reverse-engineering. React Native has proven solutions (muse-js, EEG-101).
 3. **flutter_blue_plus's licensing** is a consideration — free for small teams but $2,999 for larger organizations. react-native-ble-plx is MIT-licensed.
 4. **Drift is genuinely excellent** — arguably the best local database solution in either ecosystem, with superior type safety and migration support.
-5. **BLoC maps well to TEA** but requires more discipline than React's `useReducer`, which is literally the Elm Architecture by design.
-6. **The recommendation stands: React Native (Expo)** for this project, primarily due to the closer Elm Architecture alignment, proven EEG ecosystem, and better web deployment story. However, Flutter would be a strong second choice, especially if desktop support is prioritized.
+5. **BLoC maps well to TEA** but requires more discipline than React's `useReducer`, which is the TEA pattern (Model-View-Update) by design.
+6. **The recommendation stands: React Native (Expo)** for this project, primarily due to the closer TEA pattern alignment, proven EEG ecosystem, and better web deployment story. However, Flutter would be a strong second choice, especially if desktop support is prioritized.
 
 ---
 
